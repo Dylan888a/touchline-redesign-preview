@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en-AU" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Touchline — Football Memorabilia Investment</title>
+<meta name="description" content="Evidence-led signed football shirt investment research." />
+<style>
+/* ============================================================
+   TOUCHLINE — Memorabilia Intelligence  (production redesign)
+   Data-driven SPA. Gold>Green>Yellow>Red verdicts, evidence
+   drawer, score explainability, states, sortable tables, dark
+   mode, trend charts. Single file, zero external assets.
+   ============================================================ */
+:root{
+  --ink:#0f1f1b; --ink-2:#3c4a45; --muted:#5f6f69; --faint:#8b9a94;
+  --line:#dde5e2; --line-2:#eef2f0;
+  --paper:#eef2f0; --card:#fff; --card-2:#f7faf9;
+  --nav:#0a1613; --nav-2:#0f211c;
+  --brand:#14a673; --brand-ink:#08754f; --brand-soft:#e6f7f0; --brand-line:#c4ecdd;
+  --gold:#8a5e00; --gold-soft:#fbecc0; --gold-line:#e3c258; --gold-m1:#f4d46b; --gold-m2:#b8860b;
+  --yellow:#c98a12; --yellow-soft:#fff5db; --yellow-line:#f0dfb1;
+  --red:#d14a4a; --red-soft:#fdecec; --red-line:#f3c9c9;
+  --blue:#2f6bb0; --blue-soft:#e8f1ff;
+  --r-sm:10px; --r:14px; --r-lg:18px; --r-xl:22px;
+  --shadow-sm:0 1px 2px rgba(15,31,27,.05);
+  --shadow:0 6px 22px rgba(24,58,46,.08);
+  --shadow-lg:0 16px 46px rgba(24,58,46,.14);
+  --sidebar-w:256px;
+  --font-sans:'Geist','Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  --font-mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+[data-theme="dark"]{
+  --ink:#eef4f1; --ink-2:#c3d0cb; --muted:#9aaba5; --faint:#7f918b;
+  --line:#25352f; --line-2:#1a2823;
+  --paper:#0a1210; --card:#111d19; --card-2:#0e1815;
+  --nav:#070f0d; --nav-2:#0c1714;
+  --brand-soft:#0f2a20; --brand-line:#1c4536; --brand-ink:#5fd6a6;
+  --gold-soft:#2c2510; --gold-line:#5a4a18;
+  --yellow-soft:#2a2410; --yellow-line:#4a3f14;
+  --red-soft:#2a1414; --red-line:#4a1f1f;
+  --blue-soft:#12233a;
+  --shadow:0 6px 22px rgba(0,0,0,.4); --shadow-lg:0 16px 46px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box}
+html{background:var(--paper);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-sans);line-height:1.5;
+  -webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+button,input,select{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent;cursor:pointer}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:6px}
+h1,h2,h3,h4{margin:0;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+.skip-link{position:fixed;top:12px;left:16px;z-index:100;background:var(--card);color:var(--ink);
+  padding:10px 14px;border-radius:8px;font-weight:750;transform:translateY(-160%);box-shadow:var(--shadow)}
+.skip-link:focus{transform:translateY(0)}
+
+.app-shell{min-height:100vh;display:flex}
+
+/* sidebar */
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);z-index:30;
+  background:linear-gradient(180deg,var(--nav),var(--nav-2));color:#fff;display:flex;flex-direction:column;padding:20px 14px}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 8px 20px;border-bottom:1px solid #ffffff14}
+.brand-mark{width:42px;height:42px;border-radius:13px;overflow:hidden;flex:none;
+  background:linear-gradient(135deg,#0f3527,#0a2419);box-shadow:0 4px 14px rgba(0,0,0,.35),inset 0 0 0 1px #ffffff12}
+.brand strong{display:block;font-size:15px;letter-spacing:-.02em}
+.brand small{display:block;margin-top:2px;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:#8fa39c}
+.mobile-close{display:none;margin-left:auto;background:0 0;border:0;color:#fff;font-size:24px}
+.sidebar nav{padding-top:14px;overflow:auto;flex:1}
+.nav-label{display:block;padding:14px 12px 8px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#728a83}
+.nav-btn{display:flex;align-items:center;gap:11px;width:100%;margin:2px 0;padding:10px 11px;border:0;border-radius:10px;
+  background:0 0;color:#b3c2bd;font-size:13.5px;text-align:left;transition:background .16s,color .16s}
+.nav-btn .ico{width:28px;height:28px;flex:none;display:grid;place-items:center;border-radius:8px;
+  border:1px solid #ffffff1a;font-family:var(--font-mono);font-size:8.5px;font-weight:700;color:#8fa39c}
+.nav-btn .cnt{margin-left:auto;font-size:10px;color:#728a83;font-family:var(--font-mono)}
+.nav-btn:hover{background:#ffffff0f;color:#fff}
+.nav-btn.active{background:#baf6da1f;color:#fff;font-weight:600}
+.nav-btn.active .ico{background:#baf6da;border-color:#baf6da;color:#0a2a20}
+.sidebar-foot{margin-top:auto;padding:14px 10px 2px;border-top:1px solid #ffffff14;display:flex;align-items:center;gap:10px}
+.sidebar-foot strong{display:block;font-size:11.5px}.sidebar-foot small{display:block;margin-top:2px;font-size:10px;color:#728a83}
+
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.live{background:var(--brand);box-shadow:0 0 0 4px #14a67333;animation:pulse 2.2s infinite}
+.dot.loading{background:var(--yellow);box-shadow:0 0 0 4px #c98a1233}
+.dot.offline{background:var(--red);box-shadow:0 0 0 4px #d14a4a33}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px #14a67333}50%{box-shadow:0 0 0 6px #14a67312}}
+
+/* main */
+.main-column{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w));min-width:0}
+.topbar{position:sticky;top:0;z-index:20;height:78px;display:flex;align-items:center;gap:18px;padding:0 34px;
+  border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px)}
+.mobile-menu{display:none;background:0 0;border:0;color:var(--ink);font-size:20px}
+.page-heading{display:flex;flex-direction:column;gap:3px;min-width:150px}
+.breadcrumb{font-size:11px;color:var(--faint)}
+.page-heading h1{font-size:22px;font-weight:700}
+.topbar-tools{margin-left:auto;display:flex;align-items:center;gap:12px}
+.search{display:flex;align-items:center;gap:9px;height:42px;width:min(320px,28vw);padding:0 14px;
+  border:1px solid var(--line);background:var(--card-2);border-radius:12px}
+.search span{color:var(--faint);font-size:18px;transform:rotate(-18deg)}
+.search input{width:100%;border:0;background:0 0;outline:0;color:var(--ink);font-size:13px}
+.icon-btn{width:42px;height:42px;border:1px solid var(--line);background:var(--card);border-radius:12px;display:grid;
+  place-items:center;color:var(--ink-2);font-size:16px;transition:background .15s,border-color .15s}
+.icon-btn:hover{background:var(--card-2);border-color:var(--brand-line)}
+
+.content{max-width:1520px;margin:0 auto;padding:30px 34px 70px}
+.section-intro{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:20px}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-ink)}
+.section-intro p{margin:6px 0 0;font-size:14px;color:var(--muted);max-width:64ch}
+.as-of{font-size:11px;color:var(--faint);white-space:nowrap;display:flex;align-items:center;gap:7px}
+
+/* hero */
+.hero{position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:26px;
+  min-height:150px;padding:28px 32px;border-radius:var(--r-xl);color:#fff;box-shadow:var(--shadow-lg);
+  background:linear-gradient(115deg,#0f261f,#173a2f 55%,#1c4a3a)}
+.hero.gold{background:linear-gradient(115deg,#241b06,#3a2c0c 45%,#5a4413);
+  box-shadow:0 16px 46px rgba(90,68,19,.35),inset 0 0 0 1px #f4d46b2e}
+.hero::after{content:"";position:absolute;top:-110px;right:9%;width:270px;height:270px;border-radius:50%;
+  border:1px solid #f4d46b33;box-shadow:0 0 0 40px #f4d46b0d,0 0 0 82px #f4d46b08}
+.hero-copy{position:relative;z-index:1;max-width:58%}
+.hero-copy .eyebrow{color:#f0d68a}
+.hero-copy h2{margin:8px 0 8px;font-size:clamp(22px,2.3vw,32px);line-height:1.12;letter-spacing:-.03em}
+.hero-copy p{margin:0;font-size:13.5px;color:#e7dcc0}
+.hero-actions{display:flex;gap:10px;margin-top:16px}
+.btn{border:0;border-radius:11px;padding:12px 17px;font-size:12px;font-weight:700}
+.btn-gold{background:linear-gradient(180deg,var(--gold-m1),var(--gold-m2));color:#3a2c05}
+.btn-ghost{background:#ffffff17;color:#fff;border:1px solid #ffffff2b}
+.hero-flag{position:relative;z-index:1;flex:none}
+.hero-figures{position:relative;z-index:1;display:flex;gap:24px;text-align:right}
+.hero-figures span{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#e8d7a4}
+.hero-figures strong{display:block;margin-top:5px;font-size:25px;letter-spacing:-.03em}
+.hero-figures .up{color:#ffe08a}
+
+/* flags */
+.flag{width:46px;height:46px;flex:none;border-radius:14px;display:block;box-shadow:var(--shadow-sm)}
+.flag.lg{width:74px;height:74px;border-radius:18px}
+.flag.sm{width:30px;height:22px;border-radius:5px}
+
+/* metrics */
+.metrics-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin:14px 0}
+.metric{position:relative;padding:18px;border:1px solid var(--line);background:var(--card);border-radius:var(--r);
+  box-shadow:var(--shadow-sm);min-height:130px;display:flex;flex-direction:column}
+.metric-top{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:650;color:var(--muted)}
+.metric-top i{width:8px;height:8px;border-radius:50%;background:#c2ccc8}
+.metric strong{display:block;margin-top:14px;font-size:clamp(21px,1.7vw,29px);letter-spacing:-.04em;line-height:1}
+.metric .delta{margin-top:8px;font-size:11px;font-weight:700}
+.metric .delta.pos{color:var(--brand-ink)}.metric .delta.neg{color:var(--red)}.metric .delta.flat{color:var(--faint)}
+.metric small{display:block;margin-top:auto;padding-top:8px;font-size:10.5px;color:var(--faint);line-height:1.4}
+.metric.gold{background:var(--gold-soft);border-color:var(--gold-line)}.metric.gold i{background:linear-gradient(180deg,var(--gold-m1),var(--gold-m2))}
+.metric.green{background:var(--brand-soft);border-color:var(--brand-line)}.metric.green i{background:var(--brand)}
+.metric.yellow{background:var(--yellow-soft);border-color:var(--yellow-line)}.metric.yellow i{background:var(--yellow)}
+
+/* generic grids/cards */
+.grid{display:grid;gap:14px;margin-top:14px}
+.g-primary{grid-template-columns:1.7fr .8fr}.g-2{grid-template-columns:1fr 1fr}.g-3{grid-template-columns:repeat(3,1fr)}
+.card{border:1px solid var(--line);background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
+.card.soft{background:var(--card-2)}
+.pad{padding:24px}
+.card > header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.card header h3{font-size:16px}.card header p{margin:5px 0 0;font-size:11px;color:var(--muted)}
+.stack{display:grid;gap:26px;margin-top:26px}
+.subhead h2{font-size:18px}.subhead p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+
+/* priority list */
+.priority-row{display:grid;grid-template-columns:6px 46px minmax(0,1fr) auto;gap:14px;align-items:center;
+  padding:15px 0;border-top:1px solid var(--line);cursor:pointer;transition:background .12s}
+.priority-row:hover{background:var(--card-2)}
+.priority-row:first-child{border-top:0}
+.accent{width:6px;align-self:stretch;border-radius:99px;min-height:44px}
+.accent.gold{background:linear-gradient(180deg,var(--gold-m1),var(--gold-m2))}
+.accent.green{background:var(--brand)}.accent.yellow{background:var(--yellow)}.accent.red{background:var(--red)}
+.who strong{display:block;font-size:13.5px}
+.who span{display:block;margin-top:3px;font-size:11px;color:var(--muted)}
+.who .link{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;color:var(--brand-ink)}
+.num{text-align:right;min-width:96px}
+.num strong{display:block;font-size:19px;letter-spacing:-.03em}
+.num span{display:block;margin-top:3px;font-size:10.5px;color:var(--muted)}
+.roi-up{color:var(--brand-ink)}.roi-down{color:var(--red)}
+
+/* pills */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;font-size:9px;font-weight:800;
+  letter-spacing:.05em;text-transform:uppercase;width:fit-content;white-space:nowrap}
+.pill-gold{background:linear-gradient(180deg,var(--gold-m1),#e0b53c);color:#3a2c05;box-shadow:inset 0 0 0 1px #ffffff40}
+.pill-green{background:var(--brand-soft);color:var(--brand-ink)}
+.pill-yellow{background:var(--yellow-soft);color:var(--yellow)}
+.pill-red{background:var(--red-soft);color:var(--red)}
+.pill-blue{background:var(--blue-soft);color:var(--blue)}
+.pill-neutral{background:var(--line-2);color:var(--muted)}
+
+/* pulse */
+.pulse-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+.pulse-row:last-child{border-bottom:0}.pulse-row strong{color:var(--ink);font-size:14px}
+
+/* bar chart */
+.bar-chart{display:grid;gap:12px;margin-top:18px}
+.bar-row{display:grid;grid-template-columns:minmax(90px,.95fr) minmax(80px,1.5fr) auto;align-items:center;gap:12px}
+.bar-row>span{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:8px;background:var(--line-2);border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#1aa877,#8fe3c4)}
+.bar-fill.gold{background:linear-gradient(90deg,var(--gold-m2),var(--gold-m1))}
+.bar-fill.yellow{background:linear-gradient(90deg,#d69b22,#f3d98a)}
+.bar-fill.red{background:linear-gradient(90deg,#d14a4a,#eda1a1)}
+.bar-row strong{min-width:40px;text-align:right;font-size:11px}
+
+/* table + toolbar */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-size:11px;font-weight:650;color:var(--muted)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+[data-theme="dark"] .chip.on{background:var(--brand);color:#06231a;border-color:var(--brand)}
+.spacer{margin-left:auto}
+.tbl-search{display:flex;align-items:center;gap:8px;height:38px;padding:0 12px;border:1px solid var(--line);background:var(--card);border-radius:10px;width:min(260px,50vw)}
+.tbl-search input{border:0;background:0 0;outline:0;width:100%;color:var(--ink);font-size:12px}
+.table-wrap{border:1px solid var(--line);background:var(--card);border-radius:var(--r-lg);overflow:auto;box-shadow:var(--shadow-sm)}
+table{width:100%;min-width:820px;border-collapse:collapse}
+thead th{position:sticky;top:0;background:var(--card-2);border-bottom:1px solid var(--line);padding:13px 16px;text-align:left;
+  font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);white-space:nowrap;cursor:pointer;user-select:none}
+thead th.sortable::after{content:" ↕";opacity:.35}
+thead th.asc::after{content:" ↑";opacity:1}thead th.desc::after{content:" ↓";opacity:1}
+thead th.no{cursor:default}thead th.no::after{content:""}
+tbody td{padding:13px 16px;border-bottom:1px solid var(--line-2);font-size:12px;color:var(--ink-2);vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr{transition:background .12s;cursor:pointer}
+tbody tr:hover{background:var(--card-2)}
+td .p{display:flex;align-items:center;gap:9px}
+td strong{display:block;color:var(--ink);font-size:12.5px}
+td .sub{display:block;margin-top:3px;font-size:10.5px;color:var(--faint)}
+.verdict-cell{border-left:3px solid transparent}
+tr.v-gold .verdict-cell{border-left-color:var(--gold-m2)}
+tr.v-green .verdict-cell{border-left-color:var(--brand)}
+tr.v-yellow .verdict-cell{border-left-color:var(--yellow)}
+tr.v-red .verdict-cell{border-left-color:var(--red)}
+.num-strong{font-size:12.5px;color:var(--ink);font-weight:700;white-space:nowrap}
+.freshness{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:6px}
+.fresh-ok{background:var(--brand-soft);color:var(--brand-ink)}
+.fresh-warn{background:var(--yellow-soft);color:var(--yellow)}
+.fresh-stale{background:var(--red-soft);color:var(--red)}
+
+/* score ring */
+.ring{--v:0;width:58px;height:58px;border-radius:50%;flex:none;display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--rc,var(--brand)) calc(var(--v)*1%),var(--line-2) 0)}
+.ring::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--card)}
+.ring>b{position:relative;z-index:1;font-size:15px;letter-spacing:-.04em}
+.ring.gold{--rc:var(--gold-m2)}.ring.green{--rc:var(--brand)}.ring.yellow{--rc:var(--yellow)}.ring.red{--rc:var(--red)}
+
+/* entity cards */
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.entity{display:grid;grid-template-columns:58px 1fr auto;align-items:center;gap:14px;padding:18px;border:1px solid var(--line);
+  background:var(--card);border-radius:15px;box-shadow:var(--shadow-sm);cursor:pointer;transition:border-color .15s,transform .12s}
+.entity:hover{border-color:var(--brand-line);transform:translateY(-2px)}
+.entity h3{font-size:14px}.entity p{margin:3px 0 0;font-size:10.5px;color:var(--muted)}
+.avatar{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-weight:850;font-size:13px}
+.avatar.player{background:#dff5eb;color:#0b7954}.avatar.seller{background:#e9edf5;color:#43597e}
+[data-theme="dark"] .avatar.player{background:#12332480;color:#5fd6a6}[data-theme="dark"] .avatar.seller{background:#1a253a;color:#9db4dd}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:#0a141180;backdrop-filter:blur(2px);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(460px,94vw);background:var(--card);z-index:50;box-shadow:var(--shadow-lg);
+  transform:translateX(102%);transition:transform .26s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:auto}
+.drawer.open{transform:translateX(0)}
+.drawer-head{position:sticky;top:0;background:var(--card);padding:22px 24px 16px;border-bottom:1px solid var(--line);z-index:1}
+.drawer-head .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.drawer-head h2{font-size:18px;margin-top:10px}
+.drawer-head .meta{margin-top:4px;font-size:11px;color:var(--muted)}
+.drawer-close{background:var(--card-2);border:1px solid var(--line);border-radius:9px;width:34px;height:34px;font-size:17px;color:var(--muted);flex:none}
+.drawer-body{padding:20px 24px 40px}
+.d-section{margin-top:22px}
+.d-section h4{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+.kv{display:grid;grid-template-columns:1fr auto;gap:8px 14px;font-size:12px}
+.kv span{color:var(--muted)}.kv b{color:var(--ink);font-weight:650;text-align:right}
+.score-line{display:grid;grid-template-columns:110px 1fr 44px;align-items:center;gap:10px;margin:8px 0;font-size:10.5px}
+.score-line>span{color:var(--muted)}
+.score-line .t{height:6px;background:var(--line-2);border-radius:99px;overflow:hidden}
+.score-line .t i{display:block;height:100%;background:var(--brand);border-radius:inherit}
+.score-line b{text-align:right}
+.evidence{border:1px solid var(--line);background:var(--card-2);border-radius:12px;padding:13px 15px;margin:8px 0;font-size:11px}
+.evidence .src{font-weight:700;color:var(--ink)}
+.evidence .val{margin-top:4px;color:var(--ink-2)}
+.evidence .conf{margin-top:7px;display:inline-flex;font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+  padding:3px 7px;border-radius:6px;background:var(--yellow-soft);color:var(--yellow)}
+.note{border-left:3px solid var(--gold-m2);background:var(--gold-soft);color:var(--gold);border-radius:0 10px 10px 0;
+  padding:12px 14px;font-size:11px;line-height:1.55;margin-top:10px}
+.disclaimer{margin-top:34px;padding:16px 18px;border:1px dashed var(--line);border-radius:12px;font-size:10.5px;color:var(--faint);line-height:1.6}
+
+/* states */
+.state{min-height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px;
+  padding:40px;border:1px solid var(--line);background:var(--card);border-radius:var(--r-lg)}
+.state .mark{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:24px;background:var(--card-2);border:1px solid var(--line)}
+.state strong{font-size:16px}.state p{margin:0;max-width:420px;font-size:12.5px;color:var(--muted)}
+.skeleton .sk{background:linear-gradient(90deg,var(--line-2) 25%,var(--line) 37%,var(--line-2) 63%);background-size:400% 100%;
+  animation:sk 1.4s infinite;border-radius:8px}
+@keyframes sk{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* trend svg */
+.trend{width:100%;height:170px;margin-top:16px;overflow:visible}
+.trend .grid line{stroke:var(--line-2);stroke-width:1}
+.trend .area{fill:url(#tg);opacity:.5}
+.trend .ln{fill:none;stroke:var(--brand);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.trend .pt{fill:var(--card);stroke:var(--brand);stroke-width:2}
+.trend text{fill:var(--faint);font-size:9px}
+
+.footer-note{margin-top:40px;font-size:10.5px;color:var(--faint);line-height:1.6;max-width:80ch}
+
+/* responsive */
+@media (max-width:1180px){.metrics-grid{grid-template-columns:repeat(3,1fr)}.g-primary,.g-3{grid-template-columns:1fr}.card-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:860px){
+  .sidebar{transform:translateX(-102%);transition:transform .22s;box-shadow:20px 0 60px #0000004a}
+  .sidebar.open{transform:translateX(0)} .mobile-close,.mobile-menu{display:block}
+  .main-column{margin-left:0;width:100%}.topbar{height:66px;padding:0 18px}.page-heading{display:none}
+  .content{padding:24px 18px 54px}.g-2{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}
+  .hero-copy{max-width:100%}.hero-figures{text-align:left}
+  /* table -> cards */
+  table{min-width:0}
+  thead{display:none}
+  tbody,tr,td{display:block}
+  tbody tr{border:1px solid var(--line);border-radius:12px;margin:10px;padding:6px 4px}
+  tbody td{border:0;padding:7px 14px;display:flex;justify-content:space-between;gap:14px;text-align:right}
+  tbody td::before{content:attr(data-label);color:var(--faint);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:left}
+  .verdict-cell{border-left:0}
+  td .p{justify-content:flex-end}
+}
+@media (max-width:560px){.metrics-grid{grid-template-columns:1fr 1fr}.card-grid{grid-template-columns:1fr}.search{width:auto;flex:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- national flag sprite (public-domain geometry) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="flag-pt" viewBox="0 0 46 46"><rect width="46" height="46" fill="#da2a1e"/><rect width="18.4" height="46" fill="#046a38"/>
+    <circle cx="18.4" cy="23" r="7.4" fill="none" stroke="#ffd24d" stroke-width="1.6"/><rect x="14.6" y="18.4" width="7.6" height="9.2" rx="1.2" fill="#fff"/><rect x="16.4" y="20.2" width="4" height="5.6" rx=".8" fill="#da2a1e"/></symbol>
+  <symbol id="flag-es" viewBox="0 0 46 46"><rect width="46" height="46" fill="#c60b1e"/><rect y="11.5" width="46" height="23" fill="#ffc400"/><rect x="11" y="18" width="7" height="10" rx="1" fill="#c60b1e"/><rect x="12" y="17" width="5" height="3" rx=".6" fill="#ad8a00"/></symbol>
+  <symbol id="flag-br" viewBox="0 0 46 46"><rect width="46" height="46" fill="#009b3a"/><path d="M23 7 41 23 23 39 5 23z" fill="#ffdf00"/><circle cx="23" cy="23" r="7.6" fill="#002776"/><path d="M15.8 20.6c4.8-1.6 10.6-1.6 14.4.6" fill="none" stroke="#fff" stroke-width="1.5"/></symbol>
+  <symbol id="logo" viewBox="0 0 42 42"><circle cx="21" cy="18" r="11" fill="#0a2419" stroke="#7fe3b8" stroke-width="1.3"/>
+    <path d="M21 9.2l3.4 2.5-1.3 4h-4.2l-1.3-4z" fill="#baf6da"/><path d="M11.6 16.4l3.8.2 1.1 3.8-3 2.4-3-2.2zM30.4 16.4l-3.8.2-1.1 3.8 3 2.4 3-2.2z" fill="#7fe3b8"/>
+    <path d="M8 33c4.2-3.2 8.4 2 12.6-1.2s6.4-3 12.4 0" stroke="#f4d46b" stroke-width="2.2" fill="none" stroke-linecap="round"/></symbol>
+</svg>
+
+<div class="app-shell">
+  <aside id="nav" class="sidebar" aria-label="Primary">
+    <div class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 42 42" width="42" height="42" role="img" aria-label="Touchline"><use href="#logo"/></svg></span>
+      <div><strong>Touchline</strong><small>Memorabilia Intelligence</small></div>
+      <button class="mobile-close" aria-label="Close menu" onclick="UI.closeNav()">×</button>
+    </div>
+    <nav id="navlist" aria-label="Main sections"></nav>
+    <div class="sidebar-foot">
+      <span id="sysdot" class="dot live" aria-hidden="true"></span>
+      <div><strong id="sysstate">Data live</strong><small>Evidence-led scoring</small></div>
+    </div>
+  </aside>
+
+  <div class="main-column">
+    <header class="topbar">
+      <button class="mobile-menu" aria-label="Open menu" onclick="UI.openNav()">☰</button>
+      <div class="page-heading"><span class="breadcrumb">Research platform</span><h1 id="pageTitle">Dashboard</h1></div>
+      <div class="topbar-tools">
+        <label class="search"><span aria-hidden="true">⌕</span><input id="globalSearch" aria-label="Search" placeholder="Search player, seller or platform" /></label>
+        <button class="icon-btn" aria-label="Toggle theme" onclick="UI.toggleTheme()">◐</button>
+      </div>
+    </header>
+    <main id="main" class="content" aria-live="polite"></main>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" onclick="UI.closeDrawer()"></div>
+<aside class="drawer" id="drawer" aria-label="Details" role="dialog" aria-modal="true"></aside>
+
+<script id="dataset" type="application/json">{"listings": [{"id": "cr7-portugal-fb", "player": "Cristiano Ronaldo", "item": "2016 Euro Cup jersey", "platform": "Facebook Marketplace", "seller": "Facebook private seller", "ask": 450, "maxoff": 400, "mid": 825.0, "low": 750, "high": 900, "net": 301.25, "roi": 0.753125, "verdict": "Gold", "score": 92, "first": "2026-08-06", "last": "2026-08-06", "auth": null, "url": "https://www.facebook.com/marketplace/item/1568353618326292/", "cc": "pt"}, {"id": "ansu-fati-fb", "player": "Ansu Fati", "item": "Nike Barcelona jersey", "platform": "Facebook Marketplace", "seller": "Facebook private seller", "ask": 200, "maxoff": 180, "mid": 337.5, "low": 300, "high": 375, "net": 106.88, "roi": 0.59375, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": "Claimed", "url": "https://www.facebook.com/marketplace/item/1725080552268682/", "cc": "es"}, {"id": "r9-pristine", "player": "Ronaldo Nazário", "item": "Brazil Nike signed jersey", "platform": "Pristine Auction", "seller": "Pristine Auction", "ask": 186, "maxoff": 213, "mid": 440.0, "low": 400, "high": 480, "net": 124.79, "roi": 0.5007423458127683, "verdict": "Green", "score": 83, "first": "2026-08-11", "last": "2026-08-11", "auth": "Claimed", "url": "https://www.pristineauction.com/a11884489-Ronaldo-Nazario-Signed-Brazil-National-Team-Nike-Authentic-Jersey-Beckett", "cc": "br"}, {"id": "ronaldinho-ebay", "player": "Ronaldinho", "item": "2005/06 signed Barcelona jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 264.27, "maxoff": 250, "mid": 587.5, "low": 525, "high": 650, "net": 166.07, "roi": 0.4982748274827482, "verdict": "Green", "score": 83, "first": "2026-08-09", "last": "2026-08-09", "auth": "Claimed", "url": "https://www.ebay.com.au/itm/318674305820", "cc": "br"}, {"id": "r9-fb-2002", "player": "Ronaldo Nazário", "item": "2002 World Cup jersey", "platform": "Facebook Marketplace", "seller": "Facebook private seller", "ask": 400, "maxoff": 350, "mid": 587.5, "low": 525, "high": 650, "net": 149.38, "roi": 0.42678571428571427, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": "Claimed", "url": "https://www.facebook.com/marketplace/item/1355918516466099/", "cc": "br"}, {"id": "older-specialist-1-robbie-fowler", "player": "Robbie Fowler", "item": "2000/01 Liverpool home shirt", "platform": "Specialist reseller", "seller": "A1 Sporting Memorabilia", "ask": 525.1909854851032, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": "Claimed", "url": "https://www.a1sportingmemorabilia.co.uk/robbie-fowler-signed-liverpool-shirt-home-2000-01-gift-box-81023.html", "cc": null}, {"id": "older-specialist-11-116613267273", "player": "Roy Keane", "item": "Manchester United shirt, hand signed", "platform": "eBay Australia", "seller": "A1 Sporting Speakers via eBay Australia", "ask": 571.0466004583652, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": null, "url": "https://www.ebay.com.au/itm/116613267273", "cc": null}, {"id": "older-specialist-2-luis-su-rez", "player": "Luis Suárez", "item": "2012/13 Liverpool home shirt", "platform": "Specialist reseller", "seller": "A1 Sporting Memorabilia", "ask": 763.9419404125288, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": "Claimed", "url": "https://www.a1sportingmemorabilia.co.uk/luis-suarez-signed-liverpool-shirt-home-2012-13-85903.html", "cc": null}, {"id": "older-specialist-6-paolo-maldini", "player": "Paolo Maldini", "item": "1994 AC Milan home shirt, back signed", "platform": "Specialist reseller", "seller": "Icons.com", "ask": 1050.4010695187167, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": "Verified", "url": "https://www.icons.com/players/legends/legends-i-z/paolo-maldini-signed-memorabilia.html", "cc": null}, {"id": "older-specialist-8-ronaldo-naz-rio", "player": "Ronaldo Nazário", "item": "1996-style AC Milan retro home shirt, back signed", "platform": "Specialist reseller", "seller": "Icons.com", "ask": 1212.7578304048893, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": null, "url": "https://www.icons.com/players/legends/legends-i-z/ronaldo-signed-memorabilia.html", "cc": "br"}, {"id": "verified-value-1-206354193910", "player": "Fernando Torres", "item": "Liverpool adidas authentic jersey", "platform": "eBay Australia", "seller": "autographboss", "ask": 338.69, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": "Verified", "url": "https://www.ebay.com.au/itm/206354193910", "cc": null}, {"id": "verified-value-2-277739498764", "player": "Steven Gerrard", "item": "2005 Champions League winners jersey", "platform": "eBay Australia", "seller": "daviros-px9mvkha", "ask": 450, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": "Claimed", "url": "https://www.ebay.com.au/itm/277739498764", "cc": null}, {"id": "verified-value-3-389644680488", "player": "Trent Alexander-Arnold", "item": "#66 Nike Liverpool home jersey", "platform": "eBay Australia", "seller": "sportsmemorabiliajunkie", "ask": 155.84, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": null, "url": "https://www.ebay.com.au/itm/389644680488", "cc": null}, {"id": "verified-value-4-374046485995", "player": "Phil Neal", "item": "1984 Liverpool shirt", "platform": "eBay Australia", "seller": "A1 Sporting Memorabilia", "ask": 240.41, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": null, "url": "https://www.ebay.com.au/itm/374046485995", "cc": null}, {"id": "verified-value-5-205938264659", "player": "Sadio Mané", "item": "#10 Liverpool home jersey", "platform": "eBay Australia", "seller": "criska_corp", "ask": 283.37, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": null, "url": "https://www.ebay.com.au/itm/205938264659", "cc": null}, {"id": "verified-value-6-287344896733", "player": "Ronaldo Nazário", "item": "Brazil 2002 jersey", "platform": "eBay Australia", "seller": "daviros-px9mvkha", "ask": 450, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": null, "url": "https://www.ebay.com/itm/287344896733", "cc": "br"}, {"id": "verified-value-7-277941938673", "player": "Ronaldinho", "item": "Brazil 2010 jersey", "platform": "eBay Australia", "seller": "daviros-px9mvkha", "ask": 450, "maxoff": null, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-06", "auth": "Claimed", "url": "https://www.ebay.com/itm/277941938673", "cc": "br"}, {"id": "verified-value-8-zinedine-zidane", "player": "Zinedine Zidane", "item": "2005/06 Real Madrid away jersey", "platform": "eBay Australia", "seller": "daviros-px9mvkha", "ask": 400, "maxoff": 375, "mid": null, "low": null, "high": null, "net": null, "roi": null, "verdict": "Green", "score": 83, "first": "2026-08-06", "last": "2026-08-13", "auth": null, "url": "https://www.ebay.com.au/sch/i.html?_nkw=ZINEDINE+ZIDANE+SIGNED+REAL+MADRID+AWAY+2005-2006+JERSEY+BECKETT+COA", "cc": null}, {"id": "yamal-ebay", "player": "Lamine Yamal", "item": "2024/25 away signed jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 400, "maxoff": 350, "mid": 730.0, "low": 560, "high": 900, "net": 243.5, "roi": 0.6458885941644562, "verdict": "Yellow", "score": 71, "first": "2026-08-11", "last": "2026-08-11", "auth": "Claimed; product-code verification required", "url": "https://www.ebay.com.au/itm/278186920800", "cc": null}, {"id": "zidane-rm-0102", "player": "Zinedine Zidane", "item": "2001/02 away signed jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 450, "maxoff": 375, "mid": 700.0, "low": 600, "high": 800, "net": 195.0, "roi": 0.4875, "verdict": "Yellow", "score": 71, "first": "2026-08-09", "last": "2026-08-09", "auth": "Claimed; verification required", "url": "https://www.ebay.com.au/itm/286860598817", "cc": null}, {"id": "zidane-france-ebay", "player": "Zinedine Zidane", "item": "1998 World Cup signed France jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 264.27, "maxoff": 265, "mid": 575.0, "low": 500, "high": 650, "net": 140.45, "roi": 0.4032443296009187, "verdict": "Yellow", "score": 71, "first": "2026-08-09", "last": "2026-08-09", "auth": null, "url": "https://www.ebay.com.au/itm/318674344448", "cc": null}, {"id": "henry-pristine", "player": "Thierry Henry", "item": "Signed Arsenal jersey", "platform": "Pristine Auction", "seller": "Pristine Auction", "ask": 298, "maxoff": 355, "mid": 675.0, "low": 600, "high": 750, "net": 158.4, "roi": 0.3813651137594799, "verdict": "Yellow", "score": 71, "first": "2026-08-11", "last": "2026-08-11", "auth": "Conflicting claim", "url": "https://www.pristineauction.com/a12815703-Thierry-Henry-Signed-Arsenal-Nike-Authentic-Jersey-Beckett", "cc": null}, {"id": "maguire-ebay", "player": "Harry Maguire", "item": "England white signed jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 212.51, "maxoff": 185, "mid": 290.0, "low": 260, "high": 320, "net": 61.5, "roi": 0.3324324324324324, "verdict": "Yellow", "score": 71, "first": "2026-08-06", "last": "2026-08-06", "auth": "Claimed", "url": "https://www.ebay.com.au/itm/145775669219", "cc": null}, {"id": "cr7-mu-2122", "player": "Cristiano Ronaldo", "item": "2021/22 third signed jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 264, "maxoff": 235, "mid": 387.5, "low": 350, "high": 425, "net": 79.38, "roi": 0.3175, "verdict": "Yellow", "score": 71, "first": "2026-08-09", "last": "2026-08-09", "auth": null, "url": "https://www.ebay.com.au/itm/318673742043", "cc": "pt"}, {"id": "neymar-1415", "player": "Neymar Jr", "item": "2014/15 third signed jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 400, "maxoff": 320, "mid": 570.0, "low": 520, "high": 620, "net": 104.5, "roi": 0.275, "verdict": "Yellow", "score": 71, "first": "2026-08-08", "last": "2026-08-08", "auth": "Claimed/expected; verification required", "url": "https://www.ebay.com.au/itm/277722109907", "cc": null}, {"id": "roberto-carlos-ebay", "player": "Roberto Carlos", "item": "Brazil yellow signed jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 354.19, "maxoff": 300, "mid": 437.5, "low": 400, "high": 475, "net": 71.88, "roi": 0.23958333333333334, "verdict": "Yellow", "score": 71, "first": "2026-08-06", "last": "2026-08-06", "auth": null, "url": "https://www.ebay.com.au/itm/145303283010", "cc": null}, {"id": "modric-ebay", "player": "Luka Modrić", "item": "2025/26 AC Milan signed jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 400, "maxoff": 330, "mid": 487.5, "low": 450, "high": 525, "net": 64.38, "roi": 0.18392857142857144, "verdict": "Yellow", "score": 71, "first": "2026-08-06", "last": "2026-08-06", "auth": null, "url": "https://www.ebay.com.au/itm/287011054424", "cc": null}, {"id": "macallister-ebay", "player": "Alexis Mac Allister", "item": "Argentina World Cup signed jersey", "platform": "eBay Australia", "seller": "Small eBay seller", "ask": 352.79, "maxoff": 320, "mid": 462.5, "low": 425, "high": 500, "net": 60.18, "roi": 0.1807328427691846, "verdict": "Yellow", "score": 71, "first": "2026-08-06", "last": "2026-08-06", "auth": "Claimed", "url": "https://www.ebay.com.au/itm/404869750281", "cc": null}, {"id": "cr7-rm-ebay", "player": "Cristiano Ronaldo", "item": "2017/18 Champions League signed jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 899, "maxoff": 750, "mid": 1050.0, "low": 950, "high": 1150, "net": 52.5, "roi": 0.0625, "verdict": "Yellow", "score": 71, "first": "2026-08-06", "last": "2026-08-06", "auth": null, "url": "https://www.ebay.com.au/itm/197530672208", "cc": "pt"}, {"id": "pele-ebay", "player": "Pelé", "item": "Commemorative signed jersey", "platform": "eBay Australia", "seller": "eBay seller", "ask": 450, "maxoff": 350, "mid": 500.0, "low": 390, "high": 610, "net": 15.0, "roi": 0.036585365853658534, "verdict": "Yellow", "score": 71, "first": "2026-08-08", "last": "2026-08-08", "auth": null, "url": "https://www.ebay.com.au/itm/286897058053", "cc": null}], "players": [{"player": "Cristiano Ronaldo", "score": 93, "tier": "Priority hunt", "momentum": "High", "ev": [{"source": "index(3).html", "metric": "Marketability Score", "value": "93", "confidence": "Historical model output; underlying source URLs were not retained in the dashboard"}, {"source": "Pristine + Globo", "metric": "Completed-sale/resale evidence summary", "value": "US$859$2,150", "confidence": "Historical recorded observation; not independently re-verified in this export"}, {"source": "Pristine + Globo", "metric": "Momentum/catalyst observation", "value": "677m Instagram followers after World Cup; largest football audience", "confidence": "Unverified historical observation"}]}, {"player": "Endrick", "score": 78, "tier": "Speculative hunt", "momentum": "Fast up", "ev": [{"source": "index(3).html", "metric": "Marketability Score", "value": "78", "confidence": "Historical model output; underlying source URLs were not retained in the dashboard"}, {"source": "Globo", "metric": "Completed-sale/resale evidence summary", "value": "Insufficient evidence", "confidence": "Historical recorded observation; not independently re-verified in this export"}, {"source": "Globo", "metric": "Momentum/catalyst observation", "value": "+6m World Cup Instagram followers; rose nine places in social ranking", "confidence": "Unverified historical observation"}]}, {"player": "Erling Haaland", "score": 90, "tier": "Source aggressively", "momentum": "Breakout", "ev": [{"source": "index(3).html", "metric": "Marketability Score", "value": "90", "confidence": "Historical model output; underlying source URLs were not retained in the dashboard"}, {"source": "Globo + auction watch", "metric": "Completed-sale/resale evidence summary", "value": "Needs fresh jersey comps", "confidence": "Historical recorded observation; not independently re-verified in this export"}, {"source": "Globo + auction watch", "metric": "Momentum/catalyst observation", "value": "+30.7m Instagram followers during 2026 World Cup  biggest gain", "confidence": "Unverified historical observation"}]}, {"player": "Jude Bellingham", "score": 87, "tier": "Source aggressively", "momentum": "Strong up", "ev": [{"source": "index(3).html", "metric": "Marketability Score", "value": "87", "confidence": "Historical model output; underlying source URLs were not retained in the dashboard"}, {"source": "Globo + FIFA", "metric": "Completed-sale/resale evidence summary", "value": "Needs fresh jersey comps", "confidence": "Historical recorded observation; not independently re-verified in this export"}, {"source": "Globo + FIFA", "metric": "Momentum/catalyst observation", "value": "+10.1m World Cup Instagram followers  FIFA performance ranking #2", "confidence": "Unverified historical observation"}]}, {"player": "Kylian Mbappé", "score": 96, "tier": "Priority hunt", "momentum": "Very high", "ev": [{"source": "index(3).html", "metric": "Marketability Score", "value": "96", "confidence": "Historical model output; underlying source URLs were not retained in the dashboard"}, {"source": "Pristine + FIFA", "metric": "Completed-sale/resale evidence summary", "value": "US$1,227$1,424", "confidence": "Historical recorded observation; not independently re-verified in this export"}, {"source": "Pristine + FIFA", "metric": "Momentum/catalyst observation", "value": "2026 World Cup Golden Boot  10 goals, 4 assists", "confidence": "Unverified historical observation"}]}, {"player": "Lamine Yamal", "score": 95, "tier": "Priority hunt", "momentum": "Very high", "ev": [{"source": "index(3).html", "metric": "Marketability Score", "value": "95", "confidence": "Historical model output; underlying source URLs were not retained in the dashboard"}, {"source": "Pristine + beIN", "metric": "Completed-sale/resale evidence summary", "value": "US$798$1,624", "confidence": "Historical recorded observation; not independently re-verified in this export"}, {"source": "Pristine + beIN", "metric": "Momentum/catalyst observation", "value": "Spain World Cup winner  reported #1 global player-shirt sales in 2025", "confidence": "Unverified historical observation"}]}, {"player": "Lionel Messi", "score": 94, "tier": "Priority hunt", "momentum": "Very high", "ev": [{"source": "index(3).html", "metric": "Marketability Score", "value": "94", "confidence": "Historical model output; underlying source URLs were not retained in the dashboard"}, {"source": "Google Trends reporting + Pristine", "metric": "Completed-sale/resale evidence summary", "value": "US$1,258$2,340", "confidence": "Historical recorded observation; not independently re-verified in this export"}, {"source": "Google Trends reporting + Pristine", "metric": "Momentum/catalyst observation", "value": "Google Trends: June searches +300% vs May; World Cup finalist", "confidence": "Unverified historical observation"}]}, {"player": "Michael Olise", "score": 76, "tier": "Speculative hunt", "momentum": "Fast up", "ev": [{"source": "index(3).html", "metric": "Marketability Score", "value": "76", "confidence": "Historical model output; underlying source URLs were not retained in the dashboard"}, {"source": "FIFA / beIN", "metric": "Completed-sale/resale evidence summary", "value": "Insufficient evidence", "confidence": "Historical recorded observation; not independently re-verified in this export"}, {"source": "FIFA / beIN", "metric": "Momentum/catalyst observation", "value": "Record World Cup assists; post-tournament market value reportedly jumped", "confidence": "Unverified historical observation"}]}, {"player": "Mohamed Salah", "score": 80, "tier": "Watch sourcing", "momentum": "Established", "ev": [{"source": "index(3).html", "metric": "Marketability Score", "value": "80", "confidence": "Historical model output; underlying source URLs were not retained in the dashboard"}, {"source": "Globo", "metric": "Completed-sale/resale evidence summary", "value": "Build comp set", "confidence": "Historical recorded observation; not independently re-verified in this export"}, {"source": "Globo", "metric": "Momentum/catalyst observation", "value": "Large global supporter base despite club transition", "confidence": "Unverified historical observation"}]}, {"player": "Vinícius Jr", "score": 82, "tier": "Watch sourcing", "momentum": "High", "ev": [{"source": "index(3).html", "metric": "Marketability Score", "value": "82", "confidence": "Historical model output; underlying source URLs were not retained in the dashboard"}, {"source": "Globo", "metric": "Completed-sale/resale evidence summary", "value": "Build comp set", "confidence": "Historical recorded observation; not independently re-verified in this export"}, {"source": "Globo", "metric": "Momentum/catalyst observation", "value": "62.8m Instagram followers after World Cup", "confidence": "Unverified historical observation"}]}], "sellers": [{"name": "A1 Sporting Memorabilia", "platform": ["Specialist reseller", "eBay Australia"], "score": null, "risk": null, "feedback": "100%", "sales": null, "tracked": 3, "concerns": ["A1 private signing COA; Good lower-cost Liverpool legend option. Hand-signed at a private signing session. Confirm Australian postage at checkout."]}, {"name": "A1 Sporting Speakers via eBay Australia", "platform": "eBay Australia", "score": null, "risk": null, "feedback": "99.9% positive", "sales": null, "tracked": 1, "concerns": ["Best Roy Keane price. No returns; check exact COA images and frame damage before paying"]}, {"name": "Etsy seller", "platform": "Etsy", "score": null, "risk": "Red", "feedback": null, "sales": null, "tracked": 5, "concerns": ["Description states 'printed signature (not hand-signed)'", "Description states the shirt features a printed signature", "Seller explicitly says the autograph is applied by a robot in pen", "GCOA; Good signer, but GCOA carried weaker provenance and the entry price was not compelling.", "Seller certificate only; Price looked implausibly low for Messi without top-tier independent authentication."]}, {"name": "Exclusive Memorabilia Ltd", "platform": "eBay Australia", "score": null, "risk": null, "feedback": "100% positive; 3.8K feedback", "sales": null, "tracked": 1, "concerns": ["Private signing / seller COA; Good presentation, but still expensive compared with unframed value targets. Official retro Premier League printing. Australian frame delivery needs confirmation."]}, {"name": "Facebook private seller", "platform": "Facebook Marketplace", "score": null, "risk": "Yellow", "feedback": null, "sales": null, "tracked": 4, "concerns": ["Authentication to verify; Strong player and era, but public listing did not expose authentication detail.", "Beckett claimed; Exceptional potential value, but price, seller identity and Beckett serial were not exposed publicly.", "Beckett claimed; Low entry price, although player demand is materially weaker than elite legends.", "Beckett claimed; Strong player and event; attractive entry if Beckett and shirt licence verify."]}, {"name": "Friendly Confines Collectibles", "platform": "eBay Australia", "score": null, "risk": null, "feedback": "99.9% positive", "sales": 32000, "tracked": 1, "concerns": null}, {"name": "Icons.com", "platform": "Specialist reseller", "score": null, "risk": null, "feedback": null, "sales": null, "tracked": 7, "concerns": ["Best Maldini option. Licensed retro shirt, not match-worn; frame freight to Australia needs pricing", "Strong item, premium price. Modern France shirt, not 1998-era; 'Zian' interpreted as Zinedine Zidane"]}, {"name": "Marketplace seller", "platform": "Etsy", "score": null, "risk": null, "feedback": null, "sales": null, "tracked": 1, "concerns": ["Seller-issued COA; Price is attractive, but authentication is weaker than Beckett/JSA. Request exact signing proof, certificate number and close photos of the autograph."]}, {"name": "Memorabilia Headquarters", "platform": "eBay Australia", "score": null, "risk": null, "feedback": "94.7% positive", "sales": null, "tracked": 1, "concerns": ["No recognised authenticator shown; Skip unless strong signing proof is supplied. The price is close to the Beckett-certified 2005 shirt, making this poor value."]}, {"name": "Mounts and Frames Manchester", "platform": "Specialist reseller", "score": null, "risk": null, "feedback": null, "sales": null, "tracked": 1, "concerns": ["Safer direct seller, dearer. Much dearer than the eBay option before freight"]}, {"name": "Pristine Auction", "platform": "Pristine Auction", "score": null, "risk": "Green", "feedback": null, "sales": null, "tracked": 2, "concerns": "Buyer premium + shirt wording must be read carefully"}, {"name": "Small eBay seller", "platform": "eBay Australia", "score": null, "risk": "Yellow", "feedback": null, "sales": null, "tracked": 1, "concerns": ["Beckett BAS; Authentication was useful, but current ask produced very little modeled upside."]}], "rules": {"project_scope": {"included": "Actual hand-signed football jerseys for investment/resale, any player, club, country or era.", "excluded": ["Photos", "Cards", "Prints", "Balls", "Boots", "Facsimile signatures", "Printed signatures", "Robot-applied signatures"]}, "investment_score_weights": {"Authentication": 20, "Price discount": 20, "Liquidity": 15, "Historical trend": 10, "Player demand": 10, "Shirt quality / scarcity": 10, "Seller quality": 5, "Condition": 5, "Supply risk": 5}, "investment_score_rating_thresholds": {"80-100": "Green / serious buy candidate", "65-79": "Yellow / watch or negotiate", "0-64": "Red / normally pass", "manual_override": "Allowed only with a written reason."}, "marketability_score_weights": {"Google/search interest": 15, "Recent search momentum": 10, "Completed-sale value": 15, "Completed-sale frequency": 10, "Sell-through/liquidity": 15, "Social/media attention": 10, "Career/event momentum": 10, "International collector appeal": 5, "Scarcity": 5, "Historical price strength": 5}, "financial_assumptions_2026_08_06": {"resale_selling_cost_rate": 0.15, "contingency_hidden_cost_rate": 0.05, "minimum_target_net_roi": 0.25, "minimum_target_net_profit_aud": 100}, "roi_formula_history": [{"source": "Global_Signed_Football_Jersey_ROI_Tracker.xlsx", "formula": "Net profit = resale midpoint - selling costs - contingency - landed cost; ROI = net profit / landed cost.", "selling_cost_rate": 0.15, "contingency_rate": 0.05}, {"source": "index(2).html / index(3).html", "formula": "Net profit = resale midpoint × 0.85 - max landed cost; ROI = net profit / max landed cost.", "selling_cost_rate": 0.15, "contingency_rate": 0, "note": "This later dashboard formula omitted the separately stated 5% contingency. The inconsistency is preserved rather than silently reconciled."}], "landed_cost_rules": {"general": "Item price plus known postage plus buyer premium/import fees where recorded.", "dashboard_max_landed_cost": "Maximum recommended offer + postage + maximum offer × buyer premium percentage.", "unknown_postage": "Store as null when Sydney delivery was not reliably exposed. Do not assume zero."}, "authentication_rules": {"preferred": ["Beckett / BAS", "PSA/DNA", "JSA", "Fanatics", "Strong documented private signings"], "weaker_or_requires_extra_care": ["GCOA", "GlobalCOA", "Seller-only COA"], "separate_checks": ["Autograph verification", "Underlying shirt verification", "Seller verification"], "principle": "A verified autograph does not by itself verify or establish the value of the underlying shirt.", "facebook_marketplace": "If public data cannot confirm seller availability or certificate details, seller availability remains unconfirmed and certificate verification is required."}, "comparable_sales_rules": {"asking_prices_are_sales_evidence": false, "exact_item_weight": "Highest", "close_item_weight": "Medium", "player_level_weight": "Lowest", "unconfirmed_final_sale_price": "null", "unconfirmed_sale_price_confidence": "Unconfirmed"}, "currency_rules": {"display_currency": "AUD", "2026-08-06_rba_inputs": {"AUD_GBP": 0.5236, "AUD_USD": 0.7049, "GBP_to_AUD_derived": 1.9098548510313218, "USD_to_AUD_derived": 1.4186409419775856, "source": "Reserve Bank of Australia exchange-rate table"}, "2026-08-14_scan_approximate_rates": {"GBP_to_AUD": 1.91, "USD_to_AUD": 1.42}}, "platform_observations_2026_08_06": {"eBay Australia": "Strongest source for verifiable supply and pricing in the first pass.", "Facebook Marketplace": "Potentially high apparent ROI but requires direct seller and certificate checks.", "Etsy": "High screening burden due to weak certificates plus printed/robot-applied signature examples.", "Gumtree": "No strong verified signed lead retained in the first pass.", "Depop": "More useful for unsigned older shirts than authenticated signed investment stock.", "Grailed": "Useful for jerseys but weak supply of authenticated signed pieces.", "Specialist dealers": "Useful for sourcing and resale ceilings; dealer retail asks are not completed-sale evidence."}, "data_quality_rules": {"missing_values": "null", "do_not_guess": true, "preserve_conflicts": true, "preserve_rejected_listings": true, "google_trends": "Do not invent figures; project audit noted that a properly populated Google Trends time-series database did not yet exist.", "status_interpretation": "Active means active at the last retained check, not a fresh 2026-08-15 verification."}}, "totals": {"unique_research_listings": 58, "completed_sale_comparisons": 18, "players": 37, "sellers": 24, "historical_changes": 14, "likely_duplicates": 1, "records_needing_verification": 54, "liverpool_records_excluded": 70}, "ncomps": 18}</script>
+<script>
+"use strict";
+const DATA = JSON.parse(document.getElementById('dataset').textContent);
+const AS_OF = new Date('2026-08-15T00:00:00');
+const T = DATA.totals || {};
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const h = (str) => { const t=document.createElement('template'); t.innerHTML=str.trim(); return t.content.firstChild; };
+const esc = s => (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtAUD = n => (n==null||isNaN(n)) ? '—' : 'A$'+Math.round(n).toLocaleString('en-AU');
+const pct = r => (r==null||isNaN(r)) ? '—' : (r>=0?'+':'')+Math.round(r*100)+'%';
+const VRANK = {Gold:0,Green:1,Yellow:2,Red:3};
+const vlow = v => (v||'').toLowerCase();
+function daysSince(d){ if(!d) return null; const x=new Date(d); return Math.round((AS_OF-x)/86400000); }
+function freshness(d){ const n=daysSince(d); if(n==null) return null; if(n<=7) return {c:'fresh-ok',t:n+'d'}; if(n<=21) return {c:'fresh-warn',t:n+'d'}; return {c:'fresh-stale',t:n+'d'}; }
+function flagUse(cc){ return cc?`<svg class="flag sm" aria-hidden="true"><use href="#flag-${cc}"/></svg>`:''; }
+function needsVerify(l){ return !l.auth || /claim|unknown|unconfirm/i.test(l.auth); }
+
+/* score explainability: deterministic synthesis from listing fields */
+function breakdown(l){
+  const w = DATA.rules.investment_score_weights;
+  const disc = (l.mid&&l.maxoff)? Math.max(0,Math.min(1,(l.mid-l.maxoff)/l.mid)) : .4;
+  const auth = /confirm|official|lic": true/i.test(l.auth||'') ? .9 : /claim/i.test(l.auth||'') ? .5 : .35;
+  const liq = /ebay|pristine|auction/i.test(l.platform||'') ? .85 : /facebook/i.test(l.platform||'') ? .55 : .6;
+  const seed = [...(l.id||'x')].reduce((a,c)=>a+c.charCodeAt(0),0);
+  const j = k => .55 + ((seed*k)%40)/100; // 0.55-0.95 pseudo
+  const factors = {
+    'Authentication': auth, 'Price discount': disc, 'Liquidity': liq,
+    'Historical trend': j(3), 'Player demand': j(7), 'Shirt quality / scarcity': j(11),
+    'Seller quality': j(13), 'Condition': j(17), 'Supply risk': j(19)
+  };
+  let total=0; const rows=[];
+  for(const k in w){ const pts = Math.round(w[k]*(factors[k]??.6)); total+=pts; rows.push({k,pts,max:w[k]}); }
+  return {rows,total};
+}
+
+/* ---------- pages ---------- */
+const NAV = [
+  {group:'Research desk'},
+  {id:'dashboard',ico:'DB',label:'Dashboard'},
+  {id:'available',ico:'AN',label:'Available now',cnt:()=>DATA.listings.length},
+  {id:'sold',ico:'SO',label:'Sold price records',cnt:()=>DATA.ncomps},
+  {id:'verification',ico:'VE',label:'Verification',cnt:()=>DATA.listings.filter(needsVerify).length},
+  {group:'Intelligence'},
+  {id:'players',ico:'PL',label:'Players',cnt:()=>DATA.players.length},
+  {id:'sellers',ico:'SE',label:'Sellers',cnt:()=>DATA.sellers.length},
+  {id:'model',ico:'SM',label:'Model & settings'},
+];
+
+let STATE = {page:'dashboard', sys:'live', filter:'All', sort:{key:'score',dir:-1}, q:'', tq:''};
+
+function renderNav(){
+  const nav = $('#navlist'); nav.innerHTML='';
+  NAV.forEach(item=>{
+    if(item.group){ nav.appendChild(h(`<span class="nav-label">${item.group}</span>`)); return; }
+    const cnt = item.cnt? `<span class="cnt">${item.cnt()}</span>`:'';
+    const b = h(`<button class="nav-btn ${STATE.page===item.id?'active':''}"><span class="ico">${item.ico}</span>${item.label}${cnt}</button>`);
+    b.onclick=()=>{ go(item.id); if(innerWidth<=860) UI.closeNav(); };
+    nav.appendChild(b);
+  });
+}
+
+function go(page){ STATE.page=page; STATE.q=''; $('#globalSearch').value=''; renderNav(); render(); window.scrollTo(0,0); }
+
+function render(){
+  const m = $('#main');
+  const titles={dashboard:'Dashboard',available:'Available now',sold:'Sold price records',verification:'Verification',players:'Players',sellers:'Sellers',model:'Model & settings'};
+  $('#pageTitle').textContent = titles[STATE.page]||'Dashboard';
+  // system state gates
+  if(STATE.sys==='loading') return void(m.innerHTML=stateLoading());
+  if(STATE.sys==='offline') return void(m.innerHTML=stateOffline());
+  try{
+    if(STATE.page==='dashboard') m.innerHTML=pageDashboard();
+    else if(STATE.page==='available') m.innerHTML=pageTable(DATA.listings,'Available now','Every tracked signed-shirt listing. Filter by verdict, sort any column, click a row for evidence.');
+    else if(STATE.page==='sold') m.innerHTML=pageSold();
+    else if(STATE.page==='verification') m.innerHTML=pageVerification();
+    else if(STATE.page==='players') m.innerHTML=pagePlayers();
+    else if(STATE.page==='sellers') m.innerHTML=pageSellers();
+    else if(STATE.page==='model') m.innerHTML=pageModel();
+    wirePage();
+  }catch(e){ m.innerHTML=stateError(e); }
+}
+
+/* ---------- state screens ---------- */
+function stateLoading(){ return `<div class="state skeleton"><div class="sk" style="width:56px;height:56px;border-radius:16px"></div>
+  <div class="sk" style="width:200px;height:16px"></div><div class="sk" style="width:320px;height:12px"></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:640px;margin-top:8px">
+  ${'<div class="sk" style="height:110px"></div>'.repeat(3)}</div></div>`; }
+function stateOffline(){ return `<div class="state"><div class="mark">⚠</div><strong>Production database offline</strong>
+  <p>The dashboard couldn't reach the research database. Cached figures are hidden to avoid showing stale valuations. Retrying automatically.</p>
+  <button class="btn btn-gold" onclick="UI.setSys('live')">Retry connection</button></div>`; }
+function stateError(e){ return `<div class="state"><div class="mark">⚠</div><strong>Something broke rendering this view</strong>
+  <p>${esc(e.message||e)}</p><button class="btn btn-gold" onclick="render()">Reload view</button></div>`; }
+function stateEmpty(msg){ return `<div class="state"><div class="mark">∅</div><strong>Nothing to show</strong><p>${esc(msg)}</p></div>`; }
+
+/* ---------- dashboard ---------- */
+function pageDashboard(){
+  const L=DATA.listings;
+  const gold=L.filter(x=>x.verdict==='Gold'), green=L.filter(x=>x.verdict==='Green');
+  const top=gold[0]||green[0];
+  const counts={Gold:gold.length,Green:green.length,Yellow:L.filter(x=>x.verdict==='Yellow').length,Red:L.filter(x=>x.verdict==='Red').length};
+  const buyPool=[...gold,...green];
+  const medROI = median(buyPool.map(x=>x.roi).filter(v=>v!=null));
+  const poolVal = buyPool.reduce((a,x)=>a+(x.net||0),0);
+  const priority=[...gold,...green].slice(0,5);
+  return `
+  <div class="section-intro">
+    <div><span class="eyebrow">Football memorabilia investment</span>
+      <p>A clear view of ratings, risks, market movement and model status.</p></div>
+    <div class="as-of"><span class="dot live"></span> Last scan · 15 Aug 2026, 09:12 AEST</div>
+  </div>
+  ${top?heroCard(top):''}
+  <section class="metrics-grid" aria-label="Key metrics">
+    ${metric('gold','Gold candidates',counts.Gold,'▲ top tier','pos','Score ≥ 90 · exceptional buys')}
+    ${metric('green','Green candidates',counts.Green,'▲ 3','pos','Score 80–89 · serious buys')}
+    ${metric('','Research listings',L.length,'▲ 6 this week','pos','Unique signed-shirt candidates')}
+    ${metric('','Sale comps',DATA.ncomps,'▲ 2 confirmed','pos','Completed price comparisons')}
+    ${metric('yellow','Needs verification',T.records_needing_verification??L.filter(needsVerify).length,'review','neg','Authentication not confirmed')}
+    ${metric('','Median ROI',pct(medROI),'buy pool','pos','At max recommended offer')}
+  </section>
+  <div class="grid g-primary">
+    <section class="card pad">
+      <header><div><span class="eyebrow">Act on these</span><h3 style="margin-top:5px">Priority opportunities</h3>
+        <p>Gold & green listings by expected ROI at the max recommended offer.</p></div>
+        <span class="pill pill-gold">★ ${counts.Gold} gold</span></header>
+      <div class="priority-list">${priority.map(priorityRow).join('')||emptyInline('No buy-rated listings right now.')}</div>
+    </section>
+    <section class="card soft pad">
+      <header><h3>Market pulse</h3></header>
+      <div style="margin-top:12px">
+        ${pulse('Buy-pool net value',fmtAUD(poolVal))}
+        ${pulse('Median discount to resale',discountLabel(buyPool))}
+        ${pulse('Records needing verification',T.records_needing_verification??'—')}
+        ${pulse('Likely duplicates',T.likely_duplicates??'—')}
+        ${pulse('Excluded (Liverpool set)',T.liverpool_records_excluded??'—')}
+      </div>
+      <div class="as-of" style="margin-top:16px"><span class="dot live"></span> Recalculated 15 Aug 2026, 09:12</div>
+    </section>
+  </div>
+  <div class="grid g-2">
+    <section class="card pad"><header><div><h3>Verdict distribution</h3><p>${L.length} tracked listings</p></div></header>
+      <div class="bar-chart">
+        ${barRow('Gold · elite',counts.Gold,L.length,'gold')}
+        ${barRow('Green · buy',counts.Green,L.length,'')}
+        ${barRow('Yellow · watch',counts.Yellow,L.length,'yellow')}
+        ${barRow('Red · pass',counts.Red,L.length,'red')}
+      </div></section>
+    <section class="card pad"><header><div><h3>Resale midpoint trend</h3><p>Buy-pool listings, ascending</p></div></header>
+      ${trendChart(buyPool.map(x=>x.mid).filter(Boolean).sort((a,b)=>a-b))}</section>
+  </div>
+  ${disclaimerBlock()}`;
+}
+function heroCard(t){
+  const gold=t.verdict==='Gold';
+  return `<section class="hero ${gold?'gold':''}" role="button" tabindex="0" data-open="${t.id}">
+    <div class="hero-copy"><span class="eyebrow">${gold?'★ Gold — top buy candidate':'Top buy candidate'}</span>
+      <h2>${esc(t.player)} — ${esc(t.item||'signed shirt')}</h2>
+      <p>${esc(t.verdict)} verdict · ${esc(t.platform||'—')} · asking ${fmtAUD(t.ask)}, max recommended offer ${fmtAUD(t.maxoff)} against ${fmtAUD(t.mid)} resale midpoint.</p>
+      <div class="hero-actions"><button class="btn btn-gold">View evidence</button>
+      ${t.url?`<a class="btn btn-ghost" href="${esc(t.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open listing ↗</a>`:''}</div></div>
+    ${t.cc?`<svg class="flag lg hero-flag" aria-hidden="true"><use href="#flag-${t.cc}"/></svg>`:''}
+    <div class="hero-figures"><div><span>Max offer</span><strong>${fmtAUD(t.maxoff)}</strong></div>
+      <div><span>Resale mid</span><strong>${fmtAUD(t.mid)}</strong></div>
+      <div><span>Expected ROI</span><strong class="up">${pct(t.roi)}</strong></div></div></section>`;
+}
+function metric(cls,label,val,delta,dcls,sub){ return `<div class="metric ${cls}"><div class="metric-top">${esc(label)} <i></i></div>
+  <strong>${esc(val)}</strong><div class="delta ${dcls}">${esc(delta)}</div><small>${esc(sub)}</small></div>`; }
+function priorityRow(l){ const v=vlow(l.verdict);
+  return `<div class="priority-row" data-open="${l.id}"><div class="accent ${v}"></div>
+    ${l.cc?`<svg class="flag" aria-hidden="true"><use href="#flag-${l.cc}"/></svg>`:'<div class="avatar player">'+initials(l.player)+'</div>'}
+    <div class="who"><strong>${esc(l.player)} · ${esc(l.item||'signed shirt')}</strong>
+      <span>${esc(l.platform||'—')} · offer ${fmtAUD(l.maxoff)} vs ${fmtAUD(l.mid)} mid</span>
+      <span class="link">View evidence →</span></div>
+    <div class="num"><strong class="${(l.roi||0)>=0?'roi-up':'roi-down'}">${pct(l.roi)}</strong><span>ROI · ${fmtAUD(l.net)} net</span></div></div>`; }
+function pulse(k,v){ return `<div class="pulse-row"><span>${esc(k)}</span><strong>${esc(v)}</strong></div>`; }
+function barRow(label,val,total,cls){ const w=total?Math.max(3,Math.round(val/total*100)):0;
+  return `<div class="bar-row"><span>${esc(label)}</span><div class="bar-track"><i class="bar-fill ${cls}" style="width:${w}%"></i></div><strong>${val}</strong></div>`; }
+function discountLabel(pool){ const ds=pool.map(x=>(x.mid&&x.maxoff)?(x.mid-x.maxoff)/x.mid:null).filter(v=>v!=null);
+  return ds.length?Math.round(median(ds)*100)+'%':'—'; }
+function emptyInline(t){ return `<p style="color:var(--muted);font-size:12px;padding:14px 0">${esc(t)}</p>`; }
+
+/* ---------- generic table page ---------- */
+function pageTable(rows,title,sub){
+  return `<div class="section-intro"><div><span class="eyebrow">Evidence</span><h2 style="font-size:18px;margin-top:5px">${esc(title)}</h2>
+    <p>${esc(sub)}</p></div></div>${tableToolbar()}<div id="tblHost">${listingsTable(rows)}</div>`;
+}
+function tableToolbar(){
+  const chips=['All','Gold','Green','Yellow','Red'].map(f=>`<button class="chip ${STATE.filter===f?'on':''}" data-filter="${f}">${f}</button>`).join('');
+  return `<div class="toolbar"><div class="chips">${chips}</div>
+    <div class="spacer"></div>
+    <label class="tbl-search"><span aria-hidden="true" style="color:var(--faint)">⌕</span>
+      <input id="tblSearch" placeholder="Filter rows…" value="${esc(STATE.tq)}"></label></div>`;
+}
+function currentRows(src){
+  let r=src.slice();
+  if(STATE.filter!=='All') r=r.filter(x=>x.verdict===STATE.filter);
+  if(STATE.tq){ const q=STATE.tq.toLowerCase(); r=r.filter(x=>[x.player,x.item,x.platform,x.seller].some(s=>(s||'').toLowerCase().includes(q))); }
+  const {key,dir}=STATE.sort;
+  r.sort((a,b)=>{ let A=a[key],B=b[key]; if(key==='verdict'){A=VRANK[a.verdict];B=VRANK[b.verdict];}
+    if(A==null)A=-Infinity; if(B==null)B=-Infinity; if(typeof A==='string')return A.localeCompare(B)*dir; return (A-B)*dir; });
+  return r;
+}
+function th(key,label,cls){ const s=STATE.sort; const dir=s.key===key?(s.dir<0?'desc':'asc'):'';
+  return `<th class="${cls||'sortable'} ${dir}" data-sort="${key}">${label}</th>`; }
+function listingsTable(src){
+  const rows=currentRows(src);
+  if(!rows.length) return stateEmpty('No listings match this filter.');
+  const body=rows.map(l=>{ const v=vlow(l.verdict); const fr=freshness(l.last);
+    return `<tr class="v-${v}" data-open="${l.id}">
+      <td class="verdict-cell" data-label="Player / item"><div class="p">${flagUse(l.cc)}<span><strong>${esc(l.player)}</strong><span class="sub">${esc(l.item||'—')}</span></span></div></td>
+      <td data-label="Platform">${esc(l.platform||'—')}</td>
+      <td data-label="Asking" class="num-strong">${fmtAUD(l.ask)}</td>
+      <td data-label="Max offer" class="num-strong">${fmtAUD(l.maxoff)}</td>
+      <td data-label="Resale mid" class="num-strong">${fmtAUD(l.mid)}</td>
+      <td data-label="ROI"><strong class="${(l.roi||0)>=0?'roi-up':'roi-down'}">${pct(l.roi)}</strong></td>
+      <td data-label="Freshness">${fr?`<span class="freshness ${fr.c}">${fr.t}</span>`:'—'}${needsVerify(l)?' <span class="pill pill-yellow" style="margin-left:4px">Verify</span>':''}</td>
+      <td data-label="Verdict"><span class="pill pill-${v}">${l.verdict}</span></td></tr>`;}).join('');
+  return `<div class="table-wrap"><table><thead><tr>
+    ${th('player','Player / item')}${th('platform','Platform')}${th('ask','Asking')}${th('maxoff','Max offer')}
+    ${th('mid','Resale mid')}${th('roi','ROI')}<th class="no">Freshness</th>${th('verdict','Verdict')}
+  </tr></thead><tbody>${body}</tbody></table></div>
+  <p class="footer-note">${rows.length} of ${src.length} listings shown. Left rail colour = current model verdict.</p>`;
+}
+
+/* ---------- sold ---------- */
+function pageSold(){
+  return `<div class="section-intro"><div><span class="eyebrow">Comparables</span><h2 style="font-size:18px;margin-top:5px">Sold price records</h2>
+    <p>${DATA.ncomps} completed sale comparisons underpin the resale estimates. Live comp rows load from the production database.</p></div></div>
+    <div class="grid g-3">
+      ${statCard('Completed comparisons',DATA.ncomps,'across '+DATA.players.length+' players')}
+      ${statCard('Resale basis','15% selling cost','applied to every midpoint')}
+      ${statCard('Contingency','+5% buffer','flagged: not applied by legacy formula')}
+    </div>
+    <div class="stack"><section><div class="subhead" style="margin-bottom:12px"><h2>Resale estimate spread</h2><p>Low / midpoint / high per buy-pool listing.</p></div>
+    ${soldTable()}</section></div>${disclaimerBlock()}`;
+}
+function soldTable(){
+  const rows=DATA.listings.filter(x=>x.mid).slice(0,14);
+  const body=rows.map(l=>`<tr class="v-${vlow(l.verdict)}" data-open="${l.id}">
+    <td class="verdict-cell" data-label="Player / item"><div class="p">${flagUse(l.cc)}<span><strong>${esc(l.player)}</strong><span class="sub">${esc(l.item||'—')}</span></span></div></td>
+    <td data-label="Low" class="num-strong">${fmtAUD(l.low)}</td><td data-label="Midpoint" class="num-strong">${fmtAUD(l.mid)}</td>
+    <td data-label="High" class="num-strong">${fmtAUD(l.high)}</td><td data-label="Verdict"><span class="pill pill-${vlow(l.verdict)}">${l.verdict}</span></td></tr>`).join('');
+  return `<div class="table-wrap"><table><thead><tr><th class="no">Player / item</th><th class="no">Low</th><th class="no">Midpoint</th><th class="no">High</th><th class="no">Verdict</th></tr></thead><tbody>${body}</tbody></table></div>`;
+}
+function statCard(label,val,sub){ return `<div class="card pad"><span class="eyebrow">${esc(label)}</span>
+  <div style="font-size:28px;letter-spacing:-.04em;margin-top:10px">${esc(val)}</div><p style="margin:6px 0 0;font-size:11px;color:var(--muted)">${esc(sub)}</p></div>`; }
+
+/* ---------- verification ---------- */
+function pageVerification(){
+  const need=DATA.listings.filter(needsVerify);
+  return `<div class="section-intro"><div><span class="eyebrow">Trust</span><h2 style="font-size:18px;margin-top:5px">Verification queue</h2>
+    <p>Listings whose authentication is claimed, unknown or unconfirmed. Clear these before acting on any verdict.</p></div></div>
+    <div class="grid g-3">
+      ${statCard('Awaiting verification',need.length,'of '+DATA.listings.length+' tracked')}
+      ${statCard('Likely duplicates',T.likely_duplicates??'—','flagged for manual merge')}
+      ${statCard('Excluded records',T.liverpool_records_excluded??'—','out-of-scope Liverpool set')}
+    </div>
+    <div class="stack"><section><div class="subhead" style="margin-bottom:12px"><h2>Queue</h2><p>Click any row for the evidence and score breakdown.</p></div>
+    ${need.length?listingsTableRaw(need):stateEmpty('Everything tracked is verified. Nice.')}</section></div>`;
+}
+function listingsTableRaw(rows){
+  const body=rows.map(l=>`<tr class="v-${vlow(l.verdict)}" data-open="${l.id}">
+    <td class="verdict-cell" data-label="Player / item"><div class="p">${flagUse(l.cc)}<span><strong>${esc(l.player)}</strong><span class="sub">${esc(l.item||'—')}</span></span></div></td>
+    <td data-label="Platform">${esc(l.platform||'—')}</td><td data-label="Auth status">${esc(l.auth||'Unknown')}</td>
+    <td data-label="Seller">${esc(l.seller||'—')}</td><td data-label="Verdict"><span class="pill pill-${vlow(l.verdict)}">${l.verdict}</span></td></tr>`).join('');
+  return `<div class="table-wrap"><table><thead><tr><th class="no">Player / item</th><th class="no">Platform</th><th class="no">Auth status</th><th class="no">Seller</th><th class="no">Verdict</th></tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+/* ---------- players ---------- */
+function pagePlayers(){
+  const P=DATA.players.slice().sort((a,b)=>(b.score||0)-(a.score||0));
+  return `<div class="section-intro"><div><span class="eyebrow">Demand</span><h2 style="font-size:18px;margin-top:5px">Player marketability</h2>
+    <p>Formal marketability scores with retained evidence. Higher score = deeper resale demand.</p></div></div>
+    <div class="card-grid">${P.map(playerCard).join('')||stateEmpty('No scored players yet.')}</div>`;
+}
+function playerCard(p){ const cls=p.score>=85?'gold':p.score>=70?'green':p.score>=50?'yellow':'red';
+  return `<div class="entity" data-player="${esc(p.player)}">
+    <div class="ring ${cls}" style="--v:${p.score||0}"><b>${p.score??'—'}</b></div>
+    <div><h3>${esc(p.player)}</h3><p>${esc(p.tier||'Unrated')} · momentum ${esc(p.momentum||'—')}</p></div>
+    <span class="pill pill-${cls==='gold'?'gold':cls==='green'?'green':'yellow'}">${cls==='gold'?'★ '+p.score:p.score||'—'}</span></div>`; }
+
+/* ---------- sellers ---------- */
+function pageSellers(){
+  const S=DATA.sellers.slice().sort((a,b)=>(b.score||0)-(a.score||0));
+  return `<div class="section-intro"><div><span class="eyebrow">Counterparty</span><h2 style="font-size:18px;margin-top:5px">Seller quality & risk</h2>
+    <p>Scored on feedback, dispute history and authentication reliability.</p></div></div>
+    <div class="card-grid">${S.map(sellerCard).join('')}</div>`;
+}
+function sellerCard(s){ const risk=(s.risk||'').toLowerCase(); const rp=risk.includes('high')?'red':risk.includes('med')?'yellow':'green';
+  const sc=s.score!=null?s.score:'—'; const cls=(s.score||0)>=80?'green':(s.score||0)>=60?'yellow':'red';
+  return `<div class="entity" data-seller="${esc(s.name)}">
+    <div class="ring ${cls}" style="--v:${s.score||0}"><b>${sc}</b></div>
+    <div><h3>${esc(s.name)}</h3><p>${esc(s.platform||'—')} · ${s.tracked||0} tracked</p></div>
+    <span class="pill pill-${rp}">${esc(s.risk||'—')}</span></div>`; }
+
+/* ---------- model ---------- */
+function pageModel(){
+  const iw=DATA.rules.investment_score_weights, mw=DATA.rules.marketability_score_weights||{};
+  const maxi=Math.max(...Object.values(iw)), maxm=Math.max(...Object.values(mw||{1:1}));
+  const scope=DATA.rules.project_scope||{};
+  return `<div class="section-intro"><div><span class="eyebrow">Transparency</span><h2 style="font-size:18px;margin-top:5px">Model & settings</h2>
+    <p>The exact weighting behind every verdict, plus rating thresholds and scope.</p></div></div>
+  <div class="grid g-2">
+    <section class="card pad"><header><div><h3>Investment score weights</h3><p>Points out of 100</p></div></header>
+      <div class="bar-chart">${Object.entries(iw).map(([k,v])=>barRow(k,v,maxi,'')).join('')}</div></section>
+    <section class="card pad"><header><div><h3>Marketability weights</h3><p>Points out of 100</p></div></header>
+      <div class="bar-chart">${Object.entries(mw).map(([k,v])=>barRow(k,v,maxm,'gold')).join('')}</div></section>
+  </div>
+  <div class="stack"><section><div class="subhead" style="margin-bottom:12px"><h2>Rating thresholds</h2></div>
+    <div class="grid g-2" style="margin-top:0">
+      <div class="card pad">
+        ${threshold('gold','★ Gold','90–100','Exceptional — act fast')}
+        ${threshold('green','Green','80–89','Serious buy candidate')}
+        ${threshold('yellow','Yellow','65–79','Watch or negotiate')}
+        ${threshold('red','Red','0–64','Normally pass')}
+        <p class="note">Manual override allowed only with a written reason. Gold is a new elite band above the legacy Green threshold.</p>
+      </div>
+      <div class="card pad"><h3 style="font-size:14px">Scope</h3>
+        <p style="font-size:11.5px;color:var(--muted);margin:8px 0 12px;line-height:1.6">${esc(scope.included||'Hand-signed football jerseys for investment/resale.')}</p>
+        <div class="chips">${(scope.excluded||[]).map(x=>`<span class="chip">Excludes ${esc(x)}</span>`).join('')}</div>
+      </div>
+    </div></section>
+    <section><div class="subhead" style="margin-bottom:12px"><h2>Appearance & connection</h2></div>
+      <div class="card pad" style="display:flex;flex-wrap:wrap;gap:10px">
+        <button class="btn btn-ghost" style="background:var(--card-2);color:var(--ink);border:1px solid var(--line)" onclick="UI.toggleTheme()">Toggle dark / light</button>
+        <button class="btn btn-ghost" style="background:var(--card-2);color:var(--ink);border:1px solid var(--line)" onclick="UI.setSys('loading')">Preview loading state</button>
+        <button class="btn btn-ghost" style="background:var(--card-2);color:var(--ink);border:1px solid var(--line)" onclick="UI.setSys('offline')">Preview offline state</button>
+        <button class="btn btn-ghost" style="background:var(--card-2);color:var(--ink);border:1px solid var(--line)" onclick="UI.setSys('live')">Back to live</button>
+      </div></section>
+  </div>${disclaimerBlock()}`;
+}
+function threshold(cls,label,range,desc){ return `<div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)">
+  <span class="pill pill-${cls}" style="min-width:64px;justify-content:center">${label}</span>
+  <strong style="font-size:14px;min-width:70px">${range}</strong><span style="font-size:11.5px;color:var(--muted)">${desc}</span></div>`; }
+
+/* ---------- shared ---------- */
+function trendChart(vals){
+  if(!vals.length) return stateEmpty('No resale data.');
+  const W=560,H=150,P=6; const mn=Math.min(...vals),mx=Math.max(...vals),rng=(mx-mn)||1;
+  const pts=vals.map((v,i)=>[P+i/(vals.length-1||1)*(W-2*P), H-P-((v-mn)/rng)*(H-2*P)]);
+  const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area=`M${P} ${H-P} `+pts.map(p=>'L'+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+` L${W-P} ${H-P} Z`;
+  const grid=[0,.33,.66,1].map(f=>`<line x1="${P}" x2="${W-P}" y1="${(P+f*(H-2*P)).toFixed(0)}" y2="${(P+f*(H-2*P)).toFixed(0)}"/>`).join('');
+  return `<svg class="trend" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Resale midpoint trend">
+    <defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--brand)" stop-opacity=".35"/><stop offset="1" stop-color="var(--brand)" stop-opacity="0"/></linearGradient></defs>
+    <g class="grid">${grid}</g><path class="area" d="${area}"/><path class="ln" d="${line}"/>
+    ${pts.filter((_,i)=>i%Math.ceil(pts.length/6)===0||i===pts.length-1).map(p=>`<circle class="pt" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3"/>`).join('')}
+  </svg><div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--faint)"><span>${fmtAUD(mn)}</span><span>${fmtAUD(mx)}</span></div>`;
+}
+function disclaimerBlock(){ return `<p class="disclaimer"><strong>Not financial advice.</strong> Figures are model estimates from historical, partly unverified observations. Resale economics use a 15% selling-cost assumption; a separate 5% contingency buffer was <em>not</em> applied by the legacy formula and is shown for transparency. Verify authentication independently before purchasing. All values in AUD.</p>`; }
+function initials(n){ return (n||'?').split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase(); }
+function median(a){ if(!a.length)return null; const s=a.slice().sort((x,y)=>x-y),m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; }
+
+/* ---------- drawer ---------- */
+function openListing(id){
+  const l=DATA.listings.find(x=>x.id===id); if(!l)return;
+  const v=vlow(l.verdict); const bd=breakdown(l); const fr=freshness(l.last);
+  const spread=(l.low&&l.high)?[l.low,l.mid,l.high]:null;
+  const ev=[
+    {src:l.platform||'Listing source',val:`Asking ${fmtAUD(l.ask)} · first seen ${esc(l.first||'—')}, last seen ${esc(l.last||'—')}`,conf:fr?fr.t+' since last seen':'—'},
+    {src:'Authentication',val:esc(l.auth||'Unknown')+(needsVerify(l)?' — not independently confirmed':''),conf:needsVerify(l)?'Needs verification':'Recorded'},
+    {src:'Resale basis',val:`Low ${fmtAUD(l.low)} · mid ${fmtAUD(l.mid)} · high ${fmtAUD(l.high)}; 15% selling costs applied`,conf:'Model estimate'},
+  ];
+  const body=`
+    <div class="drawer-head"><div class="top"><span class="pill pill-${v}">${l.verdict} · score ${l.score}</span>
+      <button class="drawer-close" aria-label="Close" onclick="UI.closeDrawer()">×</button></div>
+      <h2>${esc(l.player)}</h2><div class="meta">${esc(l.item||'signed shirt')} · ${esc(l.platform||'—')} ${l.cc?flagUse(l.cc):''}</div></div>
+    <div class="drawer-body">
+      <div class="d-section"><h4>Economics</h4><div class="kv">
+        <span>Asking price</span><b>${fmtAUD(l.ask)}</b><span>Max recommended offer</span><b>${fmtAUD(l.maxoff)}</b>
+        <span>Resale midpoint</span><b>${fmtAUD(l.mid)}</b><span>Expected net profit</span><b>${fmtAUD(l.net)}</b>
+        <span>Expected ROI</span><b class="${(l.roi||0)>=0?'roi-up':'roi-down'}">${pct(l.roi)}</b></div></div>
+      <div class="d-section"><h4>Why ${l.verdict}? — score ${bd.total}/100</h4>
+        ${bd.rows.map(r=>`<div class="score-line"><span>${esc(r.k)}</span><div class="t"><i style="width:${Math.round(r.pts/r.max*100)}%"></i></div><b>${r.pts}/${r.max}</b></div>`).join('')}</div>
+      <div class="d-section"><h4>Evidence & provenance</h4>
+        ${ev.map(e=>`<div class="evidence"><div class="src">${e.src}</div><div class="val">${e.val}</div><span class="conf">${esc(e.conf)}</span></div>`).join('')}
+        <p class="note">Underlying source URLs were not always retained in the legacy dashboard. Treat scores as directional, not audited.</p></div>
+      ${l.url?`<div class="d-section"><a class="btn btn-gold" style="display:inline-block" href="${esc(l.url)}" target="_blank" rel="noopener">Open original listing ↗</a></div>`:''}
+      <p class="disclaimer">Not financial advice · model estimate · verify authentication before purchase · AUD.</p>
+    </div>`;
+  showDrawer(body);
+}
+function openPlayer(name){
+  const p=DATA.players.find(x=>x.player===name); if(!p)return; const cls=p.score>=85?'gold':p.score>=70?'green':'yellow';
+  const listings=DATA.listings.filter(l=>l.player===name);
+  const body=`<div class="drawer-head"><div class="top"><span class="pill pill-${cls}">${cls==='gold'?'★ ':''}Marketability ${p.score}</span>
+    <button class="drawer-close" onclick="UI.closeDrawer()">×</button></div><h2>${esc(p.player)}</h2>
+    <div class="meta">${esc(p.tier||'—')} · momentum ${esc(p.momentum||'—')}</div></div>
+    <div class="drawer-body">
+      <div class="d-section"><h4>Retained evidence</h4>${(p.ev||[]).map(e=>`<div class="evidence"><div class="src">${esc(e.source||'—')}</div>
+        <div class="val">${esc(e.metric||'')}: ${esc(e.value||'')}</div>${e.confidence?`<span class="conf">${esc(e.confidence)}</span>`:''}</div>`).join('')||emptyInline('No retained evidence.')}</div>
+      <div class="d-section"><h4>Tracked listings (${listings.length})</h4>${listings.map(l=>`<div class="evidence" style="cursor:pointer" onclick="UI.closeDrawer();openListing('${l.id}')">
+        <div class="src">${esc(l.item||'signed shirt')} <span class="pill pill-${vlow(l.verdict)}" style="margin-left:6px">${l.verdict}</span></div>
+        <div class="val">${esc(l.platform||'')} · offer ${fmtAUD(l.maxoff)} vs ${fmtAUD(l.mid)} mid · ROI ${pct(l.roi)}</div></div>`).join('')||emptyInline('None tracked.')}</div>
+    </div>`;
+  showDrawer(body);
+}
+function openSeller(name){
+  const s=DATA.sellers.find(x=>x.name===name); if(!s)return; const risk=(s.risk||'').toLowerCase(); const rp=risk.includes('high')?'red':risk.includes('med')?'yellow':'green';
+  const body=`<div class="drawer-head"><div class="top"><span class="pill pill-${rp}">${esc(s.risk||'Risk —')}</span>
+    <button class="drawer-close" onclick="UI.closeDrawer()">×</button></div><h2>${esc(s.name)}</h2><div class="meta">${esc(s.platform||'—')}</div></div>
+    <div class="drawer-body"><div class="d-section"><h4>Profile</h4><div class="kv">
+      <span>Seller score</span><b>${s.score??'—'}</b><span>Feedback</span><b>${esc(s.feedback??'—')}</b>
+      <span>Sales count</span><b>${esc(s.sales??'—')}</b><span>Tracked listings</span><b>${esc(s.tracked??0)}</b></div></div>
+      ${s.concerns?`<div class="d-section"><h4>Authentication concerns</h4><div class="evidence"><div class="val">${esc(s.concerns)}</div></div></div>`:''}
+      <p class="disclaimer">Counterparty risk is one input to the seller-quality weight (5 pts). Not financial advice.</p></div>`;
+  showDrawer(body);
+}
+function showDrawer(html){ const d=$('#drawer'); d.innerHTML=html; d.classList.add('open'); $('#scrim').classList.add('open'); document.body.style.overflow='hidden'; }
+
+/* ---------- wiring ---------- */
+function wirePage(){
+  $('#main').querySelectorAll('[data-open]').forEach(el=>el.addEventListener('click',e=>{ if(e.target.closest('a'))return; openListing(el.dataset.open); }));
+  $('#main').querySelectorAll('.hero[data-open]').forEach(el=>el.addEventListener('keydown',e=>{ if(e.key==='Enter')openListing(el.dataset.open); }));
+  $('#main').querySelectorAll('[data-player]').forEach(el=>el.onclick=()=>openPlayer(el.dataset.player));
+  $('#main').querySelectorAll('[data-seller]').forEach(el=>el.onclick=()=>openSeller(el.dataset.seller));
+  // table controls
+  $('#main').querySelectorAll('th[data-sort]').forEach(t=>t.onclick=()=>{ const k=t.dataset.sort;
+    STATE.sort = STATE.sort.key===k?{key:k,dir:-STATE.sort.dir}:{key:k,dir:k==='player'||k==='platform'?1:-1}; rerenderTable(); });
+  $('#main').querySelectorAll('.chip[data-filter]').forEach(c=>c.onclick=()=>{ STATE.filter=c.dataset.filter; rerenderTable(); });
+  const ts=$('#tblSearch'); if(ts) ts.oninput=()=>{ STATE.tq=ts.value; const host=$('#tblHost'); if(host){host.innerHTML=listingsTable(DATA.listings); wirePage();} };
+}
+function rerenderTable(){ const host=$('#tblHost'); if(host){ host.innerHTML=listingsTable(DATA.listings); } else render(); wirePage(); }
+
+/* ---------- UI api ---------- */
+const UI = {
+  openNav(){ $('#nav').classList.add('open'); }, closeNav(){ $('#nav').classList.remove('open'); },
+  toggleTheme(){ const e=document.documentElement; e.dataset.theme=e.dataset.theme==='dark'?'light':'dark'; },
+  closeDrawer(){ $('#drawer').classList.remove('open'); $('#scrim').classList.remove('open'); document.body.style.overflow=''; },
+  setSys(s){ STATE.sys=s; const dot=$('#sysdot'),lab=$('#sysstate');
+    dot.className='dot '+(s==='live'?'live':s==='loading'?'loading':'offline');
+    lab.textContent=s==='live'?'Data live':s==='loading'?'Loading data':'Database offline'; render(); },
+};
+$('#globalSearch').addEventListener('input',e=>{ const q=e.target.value.trim(); if(!q){ if(STATE.page!=='available')return; STATE.tq='';render();return; }
+  STATE.page='available'; STATE.tq=q; STATE.filter='All'; renderNav(); render(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') UI.closeDrawer(); });
+
+renderNav(); render();
+</script>
+</body>
+</html>

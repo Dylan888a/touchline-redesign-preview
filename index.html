@@ -347,7 +347,7 @@ tr.v-red .verdict-cell{border-left-color:var(--red)}
     <nav id="navlist" aria-label="Main sections"></nav>
     <div class="sidebar-foot">
       <span id="sysdot" class="dot live" aria-hidden="true"></span>
-      <div><strong id="sysstate">Data live</strong><small>Evidence-led scoring</small></div>
+      <div><strong id="sysstate">Static preview</strong><small>Embedded dataset · 15 Aug 2026</small></div>
     </div>
   </aside>
 
@@ -459,7 +459,7 @@ function stateLoading(){ return `<div class="state skeleton"><div class="sk" sty
   ${'<div class="sk" style="height:110px"></div>'.repeat(3)}</div></div>`; }
 function stateOffline(){ return `<div class="state"><div class="mark">⚠</div><strong>Production database offline</strong>
   <p>The dashboard couldn't reach the research database. Cached figures are hidden to avoid showing stale valuations. Retrying automatically.</p>
-  <button class="btn btn-gold" onclick="UI.setSys('live')">Retry connection</button></div>`; }
+  <button class="btn btn-gold" onclick="UI.setSys('live')">Return to static preview</button></div>`; }
 function stateError(e){ return `<div class="state"><div class="mark">⚠</div><strong>Something broke rendering this view</strong>
   <p>${esc(e.message||e)}</p><button class="btn btn-gold" onclick="render()">Reload view</button></div>`; }
 function stateEmpty(msg){ return `<div class="state"><div class="mark">∅</div><strong>Nothing to show</strong><p>${esc(msg)}</p></div>`; }
@@ -478,7 +478,7 @@ function pageDashboard(){
   <div class="section-intro">
     <div><span class="eyebrow">Football memorabilia investment</span>
       <p>A clear view of ratings, risks, market movement and model status.</p></div>
-    <div class="as-of"><span class="dot live"></span> Last scan · 15 Aug 2026, 09:12 AEST</div>
+    <div class="as-of">Embedded snapshot · 15 Aug 2026 · no automatic refresh</div>
   </div>
   ${top?heroCard(top):''}
   <section class="metrics-grid" aria-label="Key metrics">
@@ -505,7 +505,7 @@ function pageDashboard(){
         ${pulse('Likely duplicates',T.likely_duplicates??'—')}
         ${pulse('Excluded (Liverpool set)',T.liverpool_records_excluded??'—')}
       </div>
-      <div class="as-of" style="margin-top:16px"><span class="dot live"></span> Recalculated 15 Aug 2026, 09:12</div>
+      <div class="as-of" style="margin-top:16px">Recorded estimates · 15 Aug 2026 · not current market prices</div>
     </section>
   </div>
   <div class="grid g-2">
@@ -696,7 +696,7 @@ function pageModel(){
         <button class="btn btn-ghost" style="background:var(--card-2);color:var(--ink);border:1px solid var(--line)" onclick="UI.toggleTheme()">Toggle dark / light</button>
         <button class="btn btn-ghost" style="background:var(--card-2);color:var(--ink);border:1px solid var(--line)" onclick="UI.setSys('loading')">Preview loading state</button>
         <button class="btn btn-ghost" style="background:var(--card-2);color:var(--ink);border:1px solid var(--line)" onclick="UI.setSys('offline')">Preview offline state</button>
-        <button class="btn btn-ghost" style="background:var(--card-2);color:var(--ink);border:1px solid var(--line)" onclick="UI.setSys('live')">Back to live</button>
+        <button class="btn btn-ghost" style="background:var(--card-2);color:var(--ink);border:1px solid var(--line)" onclick="UI.setSys('live')">Return to static preview</button>
       </div></section>
   </div>${disclaimerBlock()}`;
 }
@@ -800,7 +800,7 @@ const UI = {
   closeDrawer(){ $('#drawer').classList.remove('open'); $('#scrim').classList.remove('open'); document.body.style.overflow=''; },
   setSys(s){ STATE.sys=s; const dot=$('#sysdot'),lab=$('#sysstate');
     dot.className='dot '+(s==='live'?'live':s==='loading'?'loading':'offline');
-    lab.textContent=s==='live'?'Data live':s==='loading'?'Loading data':'Database offline'; render(); },
+    lab.textContent=s==='live'?'Static preview':s==='loading'?'Loading preview':'Offline preview'; render(); },
 };
 $('#globalSearch').addEventListener('input',e=>{ const q=e.target.value.trim(); if(!q){ if(STATE.page!=='available')return; STATE.tq='';render();return; }
   STATE.page='available'; STATE.tq=q; STATE.filter='All'; renderNav(); render(); });
